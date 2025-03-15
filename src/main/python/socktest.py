@@ -4,6 +4,9 @@ import math
 
 HOST, PORT = 'localhost', 5001
 
+def magnitude(x, y):
+    return math.hypot(x, y)
+
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.bind((HOST, PORT))
     s.listen()
@@ -20,12 +23,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             buffer += data
             while "\n" in buffer:
                 line, buffer = buffer.split("\n", 1)
-                coords = json.loads(line.strip())
-                x, y = coords["x"], coords["y"]
-                distance = math.hypot(x, y)
+                print(line,buffer)
+                info = json.loads(line.strip())
+                mouseX, mouseY = info["mouseX"], info["mouseY"]
+                WIDTH, HEIGHT = info["WIDTH"], info["HEIGHT"]
 
-                # Map distance to a colour intensity (0-255), capped at 255
-                red_intensity = min(int(distance / 3), 255)
-                color = {"r": red_intensity, "g": 0, "b": 255 - red_intensity}
+                angle = 180 + 360 * magnitude(mouseX, mouseY) / magnitude(WIDTH, HEIGHT)
+                angle = angle % 360  # optional, to keep within [0,360]
 
-                conn.sendall((json.dumps(color) + "\n").encode('utf-8'))
+                response = {"colour": angle}
+                conn.sendall((json.dumps(response) + "\n").encode('utf-8'))

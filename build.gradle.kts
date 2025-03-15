@@ -21,12 +21,12 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     // https://mvnrepository.com/artifact/org.processing/core
-    implementation("org.processing:core:4.3.3")
+ //   implementation("org.processing:core:4.3.3")
     implementation(files("library/videoExport.jar"))
-    implementation(files("library/gluegen-rt.jar"))
-    implementation(files("library/jogl-all.jar"))
     // https://mvnrepository.com/artifact/org.reflections/reflections
     implementation("org.reflections:reflections:0.10.2")
+    // https://mvnrepository.com/artifact/org.json/json
+    implementation("org.json:json:20250107")
 
     implementation(fileTree(mapOf("dir" to "library/processing", "include" to listOf("*.jar"))))
 

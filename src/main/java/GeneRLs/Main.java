@@ -1,4 +1,5 @@
 package GeneRLs;
+import GeneRLs.storage.Vector;
 import com.hamoid.*;
 import GeneRLs.core.Applet;
 import GeneRLs.directions.Directions;
@@ -7,6 +8,9 @@ import processing.core.PFont;
 import processing.event.MouseEvent;
 
 import java.io.File;
+import processing.net.Client;
+import processing.data.JSONObject;
+
 
 public class Main extends Applet {
     public static PFont myFont, italics;
@@ -14,11 +18,14 @@ public class Main extends Applet {
     public static int WIDTH = 1420;
     public static int HEIGHT = 780;
 
+    Client client;
+
     public void setup(){
         String commonPath = sketchPath("src/main/java/GeneRLs/data/");
         myFont = createFont(commonPath + "cmunbmr.ttf", 150, true);
         italics = createFont(commonPath + "cmunbmo.ttf", 150, true);
         Directions.init(this);
+        client = new Client(this, "localhost", 5001);
 
         videoExport = new VideoExport(this,"test.mp4");
         String ffmpegPath = sketchPath("library/ffmpeg");
@@ -35,6 +42,8 @@ public class Main extends Applet {
         frameRate(60);
         //surface.setVisible(false);
       //  videoExport.startMovie();
+
+
     }
 
 
@@ -58,8 +67,39 @@ public class Main extends Applet {
     public void draw(){
         super.draw();
         //beginRecord(SVG, "frame-####.svg");
+        println(getMouseX(),getMouseY(),180 + 360 * new Vector(getMouseX(),getMouseY()).mag()/new Vector(WIDTH,HEIGHT).mag());
+        JSONObject coords = new JSONObject();
+        coords.put("mouseX", getMouseX());
+        coords.put("mouseY", getMouseY());
+        coords.put("WIDTH", WIDTH);
+        coords.put("HEIGHT", HEIGHT);
+
+        client.write(coords.toString().replaceAll("\\s+", "") + "\n");
+
+        String buffer = "";
+        float curCol = 0;
+        // Receive angle from Python
+        if (client.available() > 0) {
+            buffer += client.readString();
+            int newLine = buffer.indexOf("\n");
+            if (newLine != -1) {
+                String jsonStr = buffer.substring(0, newLine);
+                buffer = buffer.substring(newLine + 1);
+                JSONObject angleJSON = parseJSONObject(jsonStr);
+                if (angleJSON != null) {
+                    curCol = angleJSON.getFloat("colour");
+                }
+            }
+        }
+
+        strokeWeight(10);
+        stroke(curCol,255,255);
+        noFill();
+
         circle(getMouseX(),getMouseY(),100);
-        println(getMouseX(),getMouseY());
+
+
+
         //videoExport.saveFrame();
     }
 
