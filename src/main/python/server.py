@@ -1,35 +1,74 @@
 import socket
 import json
-import math
+from time import sleep
 
-HOST, PORT = 'localhost', 5001
 
-def magnitude(x, y):
-    return math.hypot(x, y)
+class ProcessingServer:
+    def __init__(self, host='localhost', port=5001):
+        self.host, self.port = host, port
+        self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # Add this to allow port reuse immediately after closure
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.s.bind((self.host, self.port))
+        self.s.listen()
+        self.conn = None
+        self.buffer = ""
+        print(f"✅ Server started at {self.host}:{self.port}, waiting for Processing...")
+        self.accept_connection()
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    print("✅ Python server started, waiting for Processing...")
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        buffer = ""
-        while True:
-            data = conn.recv(1024).decode('utf-8')
+    def accept_connection(self):
+        print("Waiting for connection...")
+        self.conn, addr = self.s.accept()
+        print(f"🔗 Connection established with {addr}")
+        self.buffer = ""
+
+    def receive(self):
+        if not self.conn:
+            self.accept_connection()
+            return None
+
+        try:
+            data = self.conn.recv(1024).decode('utf-8')
             if not data:
-                break
+                print("⚠️ Connection closed, waiting for new connection...")
+                self.conn.close()
+                self.conn = None
+                self.accept_connection()
+                return None
 
-            buffer += data
-            while "\n" in buffer:
-                line, buffer = buffer.split("\n", 1)
-                print(line,buffer)
-                info = json.loads(line.strip())
-                mouseX, mouseY = info["mouseX"], info["mouseY"]
-                WIDTH, HEIGHT = info["WIDTH"], info["HEIGHT"]
+            self.buffer += data
+            if "\n" in self.buffer:
+                line, self.buffer = self.buffer.split("\n", 1)
+                try:
+                    json_data = json.loads(line.strip())
+                    print(f"📥 Received: {json_data}")
+                    return json_data
+                except json.JSONDecodeError as e:
+                    print(f"⚠️ JSON Decode Error: {line.strip()}")
+        except socket.error:
+            print("⚠️ Socket error, resetting connection...")
+            if self.conn:
+                self.conn.close()
+            self.conn = None
+            self.accept_connection()
+        return None
 
-                angle = 180 + 360 * magnitude(mouseX, mouseY) / magnitude(WIDTH, HEIGHT)
-                angle = angle % 360  # optional, to keep within [0,360]
+    def send(self, data_dict):
+        if not self.conn:
+            print("⚠️ No active connection, cannot send data")
+            return
 
-                response = {"colour": angle}
-                conn.sendall((json.dumps(response) + "\n").encode('utf-8'))
+        try:
+            self.conn.sendall((json.dumps(data_dict) + "\n").encode('utf-8'))
+            print(f"📤 Sent: {data_dict}")
+        except socket.error:
+            print("⚠️ Socket error while sending, resetting connection...")
+            self.conn.close()
+            self.conn = None
+            self.accept_connection()
+
+    def close(self):
+        if self.conn:
+            self.conn.close()
+        self.s.close()
+        print("🚪 Connection closed gracefully.")
