@@ -1,4 +1,10 @@
 package GeneRLs;
+import GeneRLs.geom.Board;
+import GeneRLs.geom.Game;
+import GeneRLs.geom.Tiles.CrownTile;
+import GeneRLs.geom.Tiles.RookTile;
+import GeneRLs.geom.Tiles.Tile;
+import GeneRLs.storage.ColorType;
 import GeneRLs.storage.Vector;
 import GeneRLs.util.io.PyClient;
 import com.hamoid.*;
@@ -15,8 +21,8 @@ import processing.data.JSONObject;
 public class Main extends Applet {
     public static PFont myFont, italics;
     public VideoExport videoExport;
-    public static int WIDTH = 1420;
-    public static int HEIGHT = 780;
+    public static int WIDTH = 1000;
+    public static int HEIGHT = 1000;
 
     PyClient client;
 
@@ -24,8 +30,9 @@ public class Main extends Applet {
         String commonPath = sketchPath("src/main/java/GeneRLs/data/");
         myFont = createFont(commonPath + "cmunbmr.ttf", 150, true);
         italics = createFont(commonPath + "cmunbmo.ttf", 150, true);
+        textFont(myFont);
       //  Directions.init(this);
-        client = new PyClient(this, "localhost", 5001);
+       // client = new PyClient(this, "localhost", 5001);
 
         videoExport = new VideoExport(this,"test.mp4");
         String ffmpegPath = sketchPath("library/ffmpeg");
@@ -42,6 +49,7 @@ public class Main extends Applet {
         frameRate(60);
         //surface.setVisible(false);
       //  videoExport.startMovie();
+        init();
     }
 
 
@@ -61,20 +69,24 @@ public class Main extends Applet {
         }
     }
 
+    Game game;
+
+    public void init(){
+        game = new Game(this);
+    }
+
     @Override
     public void draw(){
         super.draw();
         //beginRecord(SVG, "frame-####.svg");
-        println(getMouseX(),getMouseY(),180 + 360 * new Vector(getMouseX(),getMouseY()).mag()/new Vector(WIDTH,HEIGHT).mag());
-        JSONObject coords = new JSONObject();
-        coords.put("mouseX", getMouseX());
-        coords.put("mouseY", getMouseY());
-        coords.put("WIDTH", WIDTH);
-        coords.put("HEIGHT", HEIGHT);
+      //  println(getMouseX(),getMouseY(),180 + 360 * new Vector(getMouseX(),getMouseY()).mag()/new Vector(WIDTH,HEIGHT).mag());
 
-        client.send(coords);
+       // client.send(coords);
+        println(frameRate);
+        game.draw();
 
-        JSONObject response = client.receive();
+
+       /* JSONObject response = client.receive();
 
         while (response == null){
             delay(10);
@@ -87,7 +99,7 @@ public class Main extends Applet {
         noFill();
 
         circle(getMouseX(),getMouseY(),100);
-        //videoExport.saveFrame();
+        //videoExport.saveFrame(); */
     }
 
 

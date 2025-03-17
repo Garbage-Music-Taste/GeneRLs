@@ -7,6 +7,8 @@ import GeneRLs.storage.Color;
 import GeneRLs.storage.ColorType;
 import GeneRLs.storage.Vector;
 
+import static GeneRLs.Main.myFont;
+
 
 public class Applet extends PApplet {
     public float zoom = 1.0f;
@@ -21,6 +23,8 @@ public class Applet extends PApplet {
         rectMode(CORNERS);
         strokeCap(ROUND);
         ellipseMode(CENTER);
+        textFont(myFont);
+        textMode(SHAPE);
     }
 
     @Override
@@ -72,6 +76,63 @@ public class Applet extends PApplet {
 
     public void stroke(ColorType c) {
         this.stroke(new Color(c));
+    }
+
+
+    @Override
+    public void shape(PShape shape, float x, float y) {
+        pushMatrix();
+        scale(1,-1);
+        super.shape(shape,x,-y);
+        popMatrix();
+    }
+
+    @Override
+    public void shape(PShape shape, float a, float b, float c, float d) {
+        pushMatrix();
+        scale(1,-1);
+        super.shape(shape,a,-b,c,d);
+        popMatrix();
+    }
+
+    @Override
+    public void text(String text, float x, float y) {
+        pushMatrix();
+        scale(1,-1);
+        super.text(text,x,-y);
+        popMatrix();
+    }
+
+    @Override
+    public void text(char character, float x, float y) {
+        pushMatrix();
+        scale(1,-1);
+        super.text(character,x,-y);
+        popMatrix();
+    }
+
+    @Override
+    public void text(int integer, float x, float y) {
+        pushMatrix();
+        scale(1,-1);
+        super.text(integer,x,-y);
+        popMatrix();
+    }
+
+    @Override
+    public void text(float fp, float x, float y) {
+        pushMatrix();
+        scale(1,-1);
+        super.text(fp,x,-y);
+        popMatrix();
+    }
+
+
+    public void text(Object o, float x, float y) {
+        pushMatrix();
+        scale(1,-1);
+        super.text(o.toString(),x,-y);
+        popMatrix();
     }
 
     public void shape(PShape latex, Vector pos) {
