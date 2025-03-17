@@ -6,7 +6,7 @@ import GeneRLs.storage.Vector;
 import processing.core.PApplet;
 import processing.core.PImage;
 
-public class RookTile extends Tile {
+public class RookTile extends GeneratorTile {
 
     public RookTile(Applet applet, float x, float y, float size) {
         super(applet, x, y, size);

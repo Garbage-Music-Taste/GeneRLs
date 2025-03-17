@@ -7,7 +7,7 @@ import GeneRLs.storage.Color;
 import GeneRLs.storage.ColorType;
 import GeneRLs.storage.Vector;
 
-import static GeneRLs.Main.myFont;
+import static GeneRLs.Main.*;
 
 
 public class Applet extends PApplet {
@@ -18,6 +18,8 @@ public class Applet extends PApplet {
         translate(width/2f,height/2f);
         scale(1,-1);
         scale(zoom);
+        translate(offsetX, offsetY);
+
         background(0);
         shapeMode(CENTER);
         rectMode(CORNERS);
@@ -33,8 +35,13 @@ public class Applet extends PApplet {
         init();
     }
 
+    public void update() {
+
+    }
+
     public void draw() {
         init();
+        update();
     }
 
 

@@ -48,7 +48,7 @@ public class Main extends Applet {
         videoExport.setFrameRate(60);
         frameRate(60);
         //surface.setVisible(false);
-      //  videoExport.startMovie();
+       // videoExport.startMovie();
         init();
     }
 
@@ -82,8 +82,17 @@ public class Main extends Applet {
       //  println(getMouseX(),getMouseY(),180 + 360 * new Vector(getMouseX(),getMouseY()).mag()/new Vector(WIDTH,HEIGHT).mag());
 
        // client.send(coords);
+
         println(frameRate);
+        pushMatrix();
+        translate(20,-50);
         game.draw();
+        popMatrix();
+
+        noFill();
+        stroke(ColorType.MAGENTA);
+        strokeWeight(10);
+
 
 
        /* JSONObject response = client.receive();
@@ -98,16 +107,43 @@ public class Main extends Applet {
         stroke(curCol,255,255);
         noFill();
 
-        circle(getMouseX(),getMouseY(),100);
-        //videoExport.saveFrame(); */
+        circle(getMouseX(),getMouseY(),100); */
+
+
+        //videoExport.saveFrame();
     }
 
+    public static float offsetX = 0;
+    public static float offsetY = 0;
+    public static float speed = 10; // how fast to move viewport
+    boolean[] isPressed = new boolean[50];
+
+    public void update(){
+        if (isPressed[LEFT]){
+            offsetX += speed;
+        }
+        if (isPressed[RIGHT]){
+            offsetX -= speed;
+        }
+        if (isPressed[UP]){
+            offsetY -= speed;
+        }
+        if (isPressed[DOWN]){
+            offsetY += speed;
+        }
+    }
 
     public void keyPressed() {
         if (key == 'q') {
             videoExport.endMovie();
             exit();
         }
+
+        isPressed[keyCode] = true;
+    }
+
+    public void keyReleased() {
+        isPressed[keyCode] = false;
     }
 
     public void mouseWheel(MouseEvent event) {

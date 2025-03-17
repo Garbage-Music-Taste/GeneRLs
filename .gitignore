@@ -40,3 +40,5 @@ bin/
 
 ### Mac OS ###
 .DS_Store
+ffmpeg.txt
+test.mp4

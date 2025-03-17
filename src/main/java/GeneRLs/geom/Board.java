@@ -7,7 +7,9 @@ import processing.core.PApplet;
 import processing.core.PImage;
 
 public class Board {
-    private final int rows, cols, tileSize;
+    final int rows;
+    final int cols;
+    private final int tileSize;
     private final Tile[][] tiles;
     private final Applet applet;
 
@@ -25,7 +27,7 @@ public class Board {
         float modifiedTileSize = tileSize;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                tiles[i][j] = new Tile(applet, ((float) cols /2 -j)*modifiedTileSize, ((float) rows /2 - i)*modifiedTileSize, tileSize);
+                tiles[i][j] = new Tile(applet, ((float) cols /2 - j - 0.5f)*modifiedTileSize, ((float) rows /2 - i - 0.5f)*modifiedTileSize, tileSize);
             }
         }
     }

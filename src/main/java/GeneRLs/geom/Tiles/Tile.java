@@ -51,7 +51,7 @@ public class Tile {
         // Base tile rendering
         Color color = switch (state) {
             case UNCLAIMED -> new Color(255,0,65,90);
-            case BLUE -> new Color(ColorType.CYAN);
+            case BLUE -> new Color(ColorType.BLUE);
             case RED -> new Color(ColorType.RED);
         };
         applet.fill(color);
@@ -62,7 +62,9 @@ public class Tile {
             applet.strokeWeight(4);
             applet.stroke(color);
         }
-        applet.rect(x - size/2f, y - size/2f, x + size/2f, y + size/2f,4);
+
+        applet.rect(x - size/2f, y - size/2f, x + size/2f, y + size/2f); //,4 for curved slows down for P2D renderer
+        // probably because I'm running this on an M1 mac?
 
         if (sprite != null) {
             //applet.println(applet.frameCount);

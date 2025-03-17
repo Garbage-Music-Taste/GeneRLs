@@ -49,6 +49,11 @@ public class Color implements Interpolatable<Color> {
                 saturation = new Subcolor(100);
                 brightness = new Subcolor(100);
             }
+            case BLUE -> {
+                hue = new Subcolor(220);
+                saturation = new Subcolor(100);
+                brightness = new Subcolor(100);
+            }
             case BLACK -> {
                 hue = new Subcolor(0);
                 saturation = new Subcolor(0);
