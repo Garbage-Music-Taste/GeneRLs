@@ -9,9 +9,7 @@ import processing.core.PImage;
 public class CrownTile extends GeneratorTile {
 
     public CrownTile(Applet applet, float x, float y, float size) {
-        super(applet, x, y, size);
-        String commonPath = applet.sketchPath("src/main/java/GeneRLs/data/");
-        this.sprite = applet.loadShape(commonPath + "crown.svg");
+        super(applet, x, y, size, "crown.svg");
     }
 
     public CrownTile(Applet applet, Vector pos, float size) {

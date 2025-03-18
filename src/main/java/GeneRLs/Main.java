@@ -16,6 +16,7 @@ import processing.event.MouseEvent;
 
 import java.io.File;
 import processing.data.JSONObject;
+import storage.IntVector;
 
 
 public class Main extends Applet {
@@ -83,7 +84,7 @@ public class Main extends Applet {
 
        // client.send(coords);
 
-        println(frameRate);
+       // println(frameRate);
         pushMatrix();
         translate(20,-50);
         game.draw();
@@ -116,21 +117,28 @@ public class Main extends Applet {
     public static float offsetX = 0;
     public static float offsetY = 0;
     public static float speed = 10; // how fast to move viewport
-    boolean[] isPressed = new boolean[50];
+    boolean[] isPressed = new boolean[500];
+
+    static int[] dx = {-1, 1, 0, 0};
+    static int[] dy = {0, 0, -1, 1};
+    static int[] directions = {LEFT,RIGHT,DOWN,UP};
 
     public void update(){
-        if (isPressed[LEFT]){
+        if (isPressed['A']){
             offsetX += speed;
         }
-        if (isPressed[RIGHT]){
+        if (isPressed['D']){
             offsetX -= speed;
         }
-        if (isPressed[UP]){
+        if (isPressed['W']){
             offsetY -= speed;
         }
-        if (isPressed[DOWN]){
+        if (isPressed['S']){
             offsetY += speed;
         }
+
+        // TODO: add lazy holding, small delay then performs it slowly repeated
+
     }
 
     public void keyPressed() {
@@ -140,6 +148,18 @@ public class Main extends Applet {
         }
 
         isPressed[keyCode] = true;
+
+        for (int k = 0; k < 4; ++k){
+            var dir = directions[k];
+            if (isPressed[dir]){
+                println(game.getSeletedTile().getBoardPosition());
+                storage.IntVector npos = new storage.IntVector(game.getSeletedTile().getBoardPosition()).add(new IntVector(dx[k], dy[k]));
+                if (game.inRange(npos)) {
+                    game.captureTile(game.getSeletedTile(), game.getBoard().getTile(npos));
+                    println(game.getSeletedTile().getBoardPosition()," -> ",npos);
+                }
+            }
+        }
     }
 
     public void keyReleased() {

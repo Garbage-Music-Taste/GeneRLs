@@ -5,6 +5,7 @@ import GeneRLs.geom.Tiles.CrownTile;
 import GeneRLs.geom.Tiles.Tile;
 import processing.core.PApplet;
 import processing.core.PImage;
+import storage.IntVector;
 
 public class Board {
     final int rows;
@@ -27,13 +28,14 @@ public class Board {
         float modifiedTileSize = tileSize;
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
-                tiles[i][j] = new Tile(applet, ((float) cols /2 - j - 0.5f)*modifiedTileSize, ((float) rows /2 - i - 0.5f)*modifiedTileSize, tileSize);
+                setTile(i,j,new Tile(applet, ((float) cols /2 - j - 0.5f)*modifiedTileSize, ((float) rows /2 - i - 0.5f)*modifiedTileSize, tileSize));
             }
         }
     }
 
     public void setTile(int row, int col, Tile tile) {
         tiles[row][col] = tile;
+        tiles[row][col].setBoardPosition(new IntVector(row, col));
     }
 
     public void draw() {

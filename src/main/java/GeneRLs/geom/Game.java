@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static GeneRLs.Main.myFont;
+import static processing.core.PApplet.*;
 
 public class Game {
 
@@ -35,6 +36,9 @@ public class Game {
     List<GeneratorTile> blueGeneratorTiles;
     int rows;
     int cols;
+
+    public Tile selectedTile;
+    public storage.IntVector selectedTilePos;
 
     public Game(Applet applet) {
         this.applet = applet;
@@ -68,6 +72,8 @@ public class Game {
                 }
             }
         }
+
+        selectTile(redQueen);
     }
 
     private void initSpecialTiles() {
@@ -122,6 +128,29 @@ public class Game {
         update();
         board.draw();
         info();
+        highlightSelectedTile();
+    }
+
+    long lastUpdatedTime = 90;
+
+    public void highlightSelectedTile(){
+        Tile selected = getSeletedTile();
+        if (selected == null) {
+            return;
+        }
+
+        float pulse = 100 + 70 * pow(PApplet.sin((max(0,applet.frameCount - lastUpdatedTime)) * 0.1f),1); // Oscillates between 50 and 150
+
+        applet.noFill();
+        applet.stroke(200, 255, 255, pulse); // Yellow with pulsating alpha
+        float x = selected.getPosition().x;
+        float y = selected.getPosition().y;
+        float size = tileSize;
+        applet.strokeWeight(6);
+        applet.rect(
+                x - size/2f, y - size/2f,
+                x + size/2f, y + size/2f
+        );
     }
 
     public void update() { // TODO: definitely needs some work
@@ -156,5 +185,22 @@ public class Game {
         applet.fill(ColorType.ORANGE);
         applet.textAlign(PApplet.LEFT, PApplet.CENTER);
         applet.text("Turn: " + turnNumber, -tileSize * board.cols/2, tileSize * board.rows/2 + 50);
+    }
+
+    public void selectTile(Tile tile) {
+        selectedTile = tile;
+        selectedTilePos = tile.getBoardPosition();
+    }
+
+    public Tile getSeletedTile() {
+        return selectedTile;
+    }
+
+    public void captureTile(Tile attacker, Tile defender) {
+
+    }
+
+    public boolean inRange(storage.IntVector pos) { // TODO: make sure rows and cols not mixed up
+        return pos.x >= 0 && pos.x < this.board.rows && pos.y >= 0 && pos.y < this.board.cols;
     }
 }

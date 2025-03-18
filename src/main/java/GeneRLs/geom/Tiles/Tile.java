@@ -15,7 +15,8 @@ public class Tile {
         UNCLAIMED, BLUE, RED
     }
 
-    protected float x, y; // Grid coordinates
+    protected float x, y; // Canvas coordinates
+    protected storage.IntVector boardPosition;
     protected float size;
     protected State state;
     protected Applet applet;
@@ -34,6 +35,13 @@ public class Tile {
         this(applet,pos.x,pos.y,size);
     }
 
+    public void setBoardPosition(storage.IntVector pos) {
+        boardPosition = pos;
+    }
+
+    public storage.IntVector getBoardPosition() {
+        return boardPosition;
+    }
 
     public void setState(State state) {
         this.state = state;
@@ -65,17 +73,7 @@ public class Tile {
 
         applet.rect(x - size/2f, y - size/2f, x + size/2f, y + size/2f); //,4 for curved slows down for P2D renderer
         // probably because I'm running this on an M1 mac?
-
-        if (sprite != null) {
-            //applet.println(applet.frameCount);
-            color.setBrightness(100);
-            color.setSaturation(25);
-            color.setAlpha(50);
-            sprite.setStroke(applet.color(color));
-            color.setAlpha(70);
-            sprite.setFill(applet.color(color));
-            applet.shape(sprite, x -  size/18f, y +  size/10f, size*0.666f, sprite.height/sprite.width * size*0.666f);
-        }
+        drawSprite();
 
         if (army > 0) {
             applet.fill(0); // black text for good readability
@@ -94,5 +92,9 @@ public class Tile {
 
             applet.text(army, x, y + size/15f);
         }
+    }
+
+    public void drawSprite(){
+
     }
 }

@@ -12,6 +12,11 @@ public class IntVector {
         this.y = y;
     }
 
+    public IntVector(storage.IntVector intVector) {
+        this.x = intVector.x;
+        this.y = intVector.y;
+    }
+
 
     public long getX() {
         return x;
@@ -32,5 +37,11 @@ public class IntVector {
     @Override
     public String toString(){
         return "[" + this.x + " " + this.y + "]";
+    }
+
+    public IntVector add(IntVector vector){
+        this.x += vector.x;
+        this.y += vector.y;
+        return this;
     }
 }
